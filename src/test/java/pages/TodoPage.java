@@ -14,10 +14,12 @@ import java.util.List;
 
 public class TodoPage {
 
+    // Fields
     private WebDriver driver;
     private WebDriverWait webDriverWait;
     private Actions actions;
 
+    // Constructor
     public TodoPage(WebDriver driver) {
         this.driver = driver;
         webDriverWait = new WebDriverWait(driver, Duration.ofSeconds(10));
@@ -26,6 +28,8 @@ public class TodoPage {
 
     // Locators
     private By todoInput = By.id("todo-input");
+    private By todoItemsList = By.className("todo-list");
+    private By todoItemsLeftCounter = By.className("todo-count");
 
     // Methods
     public void addNewItem(String item) {
@@ -35,10 +39,8 @@ public class TodoPage {
         textInput.sendKeys(Keys.ENTER);
     }
 
-
     public void clickCheckbox(String itemText) {
-        String xpathLocator = String.format("//label[text()='%s']/preceding-sibling::input", itemText);
-        WebElement list = webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.className("todo-list")));
+        WebElement list = webDriverWait.until(ExpectedConditions.presenceOfElementLocated(todoItemsList));
         List<WebElement> items = list.findElements(By.tagName("li"));
         for (WebElement item : items) {
             WebElement itemCheckbox = item.findElement(By.className("toggle"));
@@ -51,7 +53,7 @@ public class TodoPage {
     }
 
     public void assertItemsLeft(Integer expectedCount) {
-        WebElement itemsCount = webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.className("todo-count")));
+        WebElement itemsCount = webDriverWait.until(ExpectedConditions.presenceOfElementLocated(todoItemsLeftCounter));
         List<String> items = List.of(itemsCount.getText().split(" "));
         Assertions.assertEquals(expectedCount, Integer.parseInt(items.get(0)), "Wrong items count");
     }

@@ -11,10 +11,12 @@ import java.time.Duration;
 
 public class HomePage {
 
+    // Fields
     private WebDriver driver;
     private WebDriverWait webDriverWait;
     private Actions actions;
 
+    // Constructor
     public HomePage(WebDriver driver) {
         this.driver = driver;
         webDriverWait = new WebDriverWait(driver, Duration.ofSeconds(10));
