@@ -1,6 +1,7 @@
 package tests;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import io.qameta.allure.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -42,6 +43,13 @@ public class firstTests {
 
     @ParameterizedTest(name = "Test {index} - {0}")
     @MethodSource("provideTodoParameters")
+    @Link(name = "Website", url = "https://todomvc.com/")
+    @Owner("User")
+    @Description("Questo test prova a creare degli item in una ToDo list, spuntarne alcuni e assicurarsi che siano stati creati con successo")
+    @Epic("TodoMVC")
+    @Feature("ToDo List")
+    @Story("Utente crea e spunta task in una lista")
+    @Severity(SeverityLevel.CRITICAL)
     public void toDoListTest(
             String technology,
             List<String> todoItems,
@@ -51,18 +59,36 @@ public class firstTests {
         // Navigate to page
         driver.get("https://todomvc.com/");
 
+        Allure.parameter("technology", technology);
+        Allure.parameter("todoItems", todoItems);
+        Allure.parameter("todoItemsToCheck", todoItemsToCheck);
+        Allure.parameter("expectedLeftItems", expectedLeftItems);
+
+        Allure.step("click on " + technology);
+
         // Click on the link
         homePage.clickLink(technology);
 
         // Add todo items
+        Allure.step("Aggiungo delle task alla lista", step -> {
         for (String todoItem : todoItems) {
+            Allure.step("Aggiungo l'item " + todoItem);
             todoPage.addNewItem(todoItem);
         }
+        });
 
         // Check todo items
-        for (String todoItemToCheck : todoItemsToCheck) {
-            todoPage.clickCheckbox(todoItemToCheck);
+        Allure.step("Spunto delle task nella lista", step -> {
+
+            for (String todoItemToCheck : todoItemsToCheck) {
+                Allure.step("Spunto l'item " + todoItemToCheck);
+
+                todoPage.clickCheckbox(todoItemToCheck);
         }
+        });
+
+        Allure.step("Verificare il numero di item rimasti");
+
 
         // Check items left
         todoPage.assertItemsLeft(expectedLeftItems);
